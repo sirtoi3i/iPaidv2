@@ -7,6 +7,7 @@ import { HomePage } from '../pages/home/home';
 import {ListsPage} from '../pages/lists/lists';
 import {ListDetailsPage} from '../pages/list-details/list-details';
 import {ListCreationPage} from '../pages/list-creation/list-creation';
+import {PouchService} from "../services/pouch.service";
 
 
 @NgModule({
@@ -30,6 +31,6 @@ import {ListCreationPage} from '../pages/list-creation/list-creation';
     ListCreationPage,
     PurchaseCreationPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, ListProvider]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, ListProvider,PouchService]
 })
 export class AppModule {}
