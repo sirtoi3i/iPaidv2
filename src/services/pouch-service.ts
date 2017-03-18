@@ -19,17 +19,8 @@ export class PouchServiceV2 {
     private userId;
 
 
-    private privDBinstance;
-    private options = {
-        live: true,
-        retry: true,
-        since: 'now',
-        include_docs: true,
-        auth: {
-            username: this.identiy,
-            password: this.identiy
-        }
-    };
+    public privDBinstance;
+    private options;
     private adminOptions = {
         live: false,
         retry: false,
@@ -61,6 +52,17 @@ export class PouchServiceV2 {
     registerUser(username: string) {
 
         this.identiy = username.toLowerCase();
+
+        this.options = {
+            live: true,
+            retry: true,
+            since: 'now',
+            include_docs: true,
+            auth: {
+                username: this.identiy,
+                password: this.identiy
+            }
+        };
         this.privDBinstance = new PouchDB(this.identiy);
         this.userId = this.USERIDPrefix + this.identiy;
         this.usersDB = new PouchDB(this.HOST + this.USERDB, this.adminOptions);
@@ -197,5 +199,58 @@ export class PouchServiceV2 {
         ;
 
 
+    }
+
+    public createDB(name: string) {
+
+        console.log("createPrivateDB");
+
+
+        let sync = PouchDB.replicate(name, this.HOST + name, this.adminOptions)
+            .on('change', function (info) {
+                // handle change
+                console.info("change" + info)
+            }).on('paused', function (err) {
+                // replication paused (e.g. replication up to date, user went offline)
+                console.error("paused", err)
+            }).on('active', function () {
+                // replicate resumed (e.g. new changes replicating, user went back online)
+                console.error("active")
+            }).on('denied', function (err) {
+                // a document failed to replicate (e.g. due to permissions)
+                console.error("denied" + err)
+            }).on('complete', i => {
+                // handle complete
+                console.info("complete" + i);
+                //this.syncremote(name);
+            }).on('error', function (err) {
+                console.error("error" + err)
+            });
+
+
+    }
+
+    private syncremote(listName: string) {
+
+        console.log("syncRemoteList");
+        let sync = PouchDB.sync(listName, this.HOST + listName, this.options)
+            .on('change', function (info) {
+                // handle change
+                console.info("change" + info)
+            }).on('paused', function (err) {
+                // replication paused (e.g. replication up to date, user went offline)
+                console.error("paused", err)
+            }).on('active', function () {
+                // replicate resumed (e.g. new changes replicating, user went back online)
+                console.error("active")
+            }).on('denied', function (err) {
+                // a document failed to replicate (e.g. due to permissions)
+                console.error("complete" + err)
+            }).on('complete', function (info) {
+                // handle complete
+                console.info("complete" + info)
+            }).on('error', function (err) {
+                console.error("error" + err)
+            });
     }
 }

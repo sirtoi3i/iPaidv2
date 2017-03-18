@@ -5,26 +5,28 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-  <ion-navbar>
-    <ion-title>login</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>login</ion-title>
+    </ion-navbar>
 </ion-header>
 
 
-<ion-content padding>
-  <ion-list>
+<ion-content>
+    <ion-list>
 
-  <ion-item>
-    <ion-label fixed>Username</ion-label>
-    <ion-input type="text" value=""  [(ngModel)]="username"></ion-input>
-  </ion-item>
+        <ion-item>
+            <ion-label fixed>Username</ion-label>
+            <ion-input type="text" value="" [(ngModel)]="username"></ion-input>
+        </ion-item>
 
-  <ion-item>
-    <ion-label fixed>Password</ion-label>
-    <ion-input type="password"></ion-input>
-  </ion-item>
+        <ion-item>
+            <ion-label fixed>Password</ion-label>
+            <ion-input type="password"></ion-input>
+        </ion-item>
 
-</ion-list>
+    </ion-list>
 
-<button ion-button (click)="login()">Login</button>
+    <button ion-button full (click)="login()">Login</button>
+
+    <button ion-button full color="danger" (click)="pouchService.clear()">Clear all</button>
 </ion-content>

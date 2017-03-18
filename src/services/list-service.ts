@@ -1,39 +1,37 @@
 import {Injectable, ApplicationRef} from '@angular/core';
 import * as PouchDB from 'pouchdb';
-import { Http} from "@angular/http";
+import {Http} from "@angular/http";
+import {PouchServiceV2} from "./pouch-service";
 
 
 @Injectable()
 export class ListService {
 
-    localUserDB: any;
 
-    constructor(private http: Http, private ref: ApplicationRef) {
-        this.localUserDB = new PouchDB('michel');
-        this.syncListDB('michel');
+    constructor(private http: Http, private ref: ApplicationRef, public pouchService: PouchServiceV2) {
+
     }
 
-    createList(listName:string) {
+    createList(listName: string) {
+
+        //CREATE Local DB
         new PouchDB(listName);
-        this.localUserDB.post({listName: listName});
-    }  
+        //CREATE Remote DB
+        this.pouchService.createDB(listName);
 
 
-    getListDB(listName:string) {
-       return new PouchDB(listName);
-    }
-
-    syncListDB(listName: string) {
-        let options = {
-            live: true,
-            retry: true
-        }
-        // create _security doc
-        return PouchDB.sync(listName, 'http://localhost:5984/' + listName, options);
+        //Save DB in Private DB
+        this.pouchService.privDBinstance.post({listName: listName});
     }
 
     getUserDB() {
-        return this.localUserDB;
+        return this.pouchService.privDBinstance;
     }
+
+
+    getListDB(listName: string) {
+        return new PouchDB(listName);
+    }
+
 
 }
