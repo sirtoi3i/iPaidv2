@@ -2,7 +2,7 @@ import {ListService} from '../services/list-service';
 import {User} from '../objects/user';
 import {Purchase} from '../objects/purchase';
 import {PurchaseList} from '../objects/list';
-import {Injectable} from '@angular/core';
+import {Injectable, ApplicationRef} from '@angular/core';
 import {Http} from '@angular/http';
 import 'rxjs/add/operator/map';
 import {PouchService} from "../services/pouch.service";
@@ -21,7 +21,7 @@ export class ListProvider {
     lists;
 
 
-    constructor(public http: Http, private listService: ListService) {
+    constructor(public http: Http, private listService: ListService, private ref: ApplicationRef) {
         console.log('Hello ListProvider Provider');
 
     }
@@ -39,6 +39,9 @@ export class ListProvider {
 
             });
 
+        this.listService.pouchService.privDBinstance.changes({live: true, since: 'now', include_docs: true})
+            .on('change', this.onDatabaseChange);
+
         /* for (var i = 0; i < 10; i++) {
          let myPurchases = new Array<Purchase>();
          let myUsers = new Array<User>();
@@ -52,30 +55,13 @@ export class ListProvider {
         //this.lists.push({name: listName, purchases: new Array<Purchase>(), users: new Array<User>()});
     }
 
-    /* private onDatabaseChange = (change) => {
-
-     var index = this.findIndex(this._lists, change.id);
-     var birthday = this._lists[index];
-
-     if (change.deleted) {
-     if (birthday) {
-     this._lists.splice(index, 1); // delete
-     }
-     } else {
-
-     if (birthday && birthday._id === change.id) {
-     this._lists[index] = change.doc; // update
-     } else {
-     console.debug(JSON.stringify(change.doc));
-     this._lists.push(change.doc); // insert
-     this.ref.tick();
-     }
-     }
-     }*/
+    private onDatabaseChange = (change) => {
+        this.lists.push({title: change.doc.listName, purchases: new Array<Purchase>(), users: new Array<User>()});
+        this.ref.tick();
+    }
 
     addList(list: PurchaseList) {
-        this.listService.createList(list.name);
-
+        this.listService.createList(list);
     }
 
     addPurchase(list: PurchaseList, purchase: Purchase) {

@@ -99,8 +99,9 @@ export class PouchServiceV2 {
         });
     }
 
-    public notify() {
-        this.notiDB.post({fromUser: "tobi", toUser: "michel", listName: "zelten"})
+    public notify(toBeNotified: string, listName: string) {
+
+        this.notiDB.post({fromUser: this.identiy, toUser: toBeNotified, listName: listName})
     }
 
     private initUser() {
