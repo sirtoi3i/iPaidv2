@@ -58,26 +58,13 @@ export class ListProvider {
         //this.lists.push({name: listName, purchases: new Array<Purchase>(), users: new Array<User>()});
     }
 
-   /* private onDatabaseChange = (change) => {
+    private onDatabaseChange = (change) => {
 
-        var index = this.findIndex(this._lists, change.id);
-        var birthday = this._lists[index];
 
-        if (change.deleted) {
-            if (birthday) {
-                this._lists.splice(index, 1); // delete
-            }
-        } else {
-
-            if (birthday && birthday._id === change.id) {
-                this._lists[index] = change.doc; // update
-            } else {
-                console.debug(JSON.stringify(change.doc));
-                this._lists.push(change.doc); // insert
-                this.ref.tick();
-            }
-        }
-    }*/
+        if (change.created) {
+            // do nothing at the moment
+        } 
+    }
 
     addList(list: PurchaseList) {
        this.listService.createList(list.name);
