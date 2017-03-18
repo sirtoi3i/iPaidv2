@@ -142,25 +142,7 @@ export class PouchServiceV2 {
 
     private syncToPrivateDB() {
         console.log("syncToPrivateDB");
-        let sync = PouchDB.sync(this.identiy, this.HOST + this.identiy, this.options)
-            .on('change', function (info) {
-                // handle change
-                console.info("change" + info)
-            }).on('paused', function (err) {
-                // replication paused (e.g. replication up to date, user went offline)
-                console.error("paused", err)
-            }).on('active', function () {
-                // replicate resumed (e.g. new changes replicating, user went back online)
-                console.error("active")
-            }).on('denied', function (err) {
-                // a document failed to replicate (e.g. due to permissions)
-                console.error("complete" + err)
-            }).on('complete', function (info) {
-                // handle complete
-                console.info("complete" + info)
-            }).on('error', function (err) {
-                console.error("error" + err)
-            });
+        let sync = PouchDB.sync(this.identiy, this.HOST + this.identiy, this.options);
     }
 
     private securePrivateDB() {
@@ -203,7 +185,7 @@ export class PouchServiceV2 {
 
     public createDB(name: string) {
 
-        console.log("createPrivateDB");
+        console.log("create DB with name", name);
 
 
         let sync = PouchDB.replicate(name, this.HOST + name, this.adminOptions)
