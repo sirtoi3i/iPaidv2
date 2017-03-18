@@ -39,6 +39,9 @@ export class ListProvider {
 
             });
 
+        this.listService.pouchService.privDBinstance.changes({live: true, since: 'now', include_docs: true})
+                        .on('change', this.onDatabaseChange);
+
         /* for (var i = 0; i < 10; i++) {
          let myPurchases = new Array<Purchase>();
          let myUsers = new Array<User>();
@@ -52,36 +55,9 @@ export class ListProvider {
         //this.lists.push({name: listName, purchases: new Array<Purchase>(), users: new Array<User>()});
     }
 
-<<<<<<< HEAD
     private onDatabaseChange = (change) => {
-
-
-        if (change.created) {
-            // do nothing at the moment
-        } 
+        this.lists.push({title: change.doc.listName, purchases: new Array<Purchase>(), users: new Array<User>()});
     }
-=======
-    /* private onDatabaseChange = (change) => {
-
-     var index = this.findIndex(this._lists, change.id);
-     var birthday = this._lists[index];
-
-     if (change.deleted) {
-     if (birthday) {
-     this._lists.splice(index, 1); // delete
-     }
-     } else {
-
-     if (birthday && birthday._id === change.id) {
-     this._lists[index] = change.doc; // update
-     } else {
-     console.debug(JSON.stringify(change.doc));
-     this._lists.push(change.doc); // insert
-     this.ref.tick();
-     }
-     }
-     }*/
->>>>>>> 16dc23c95320f8b25c46e49386fb473363a67715
 
     addList(list: PurchaseList) {
         this.listService.createList(list.name);
