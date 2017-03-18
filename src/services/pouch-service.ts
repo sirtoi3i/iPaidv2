@@ -5,7 +5,23 @@ import { Http} from "@angular/http";
 @Injectable()
 export class PouchServiceV2 {
     constructor(private http: Http, private ref: ApplicationRef) {
+
+
     }
+
+
+
+    registerUser(){
+
+        this.connectToUserDB();
+        this.connectToUserDB();
+
+
+    }
+
+
+
+
 
     initUser(username:string) {
         let usersDB = new PouchDB('http://localhost:5984/_users');
