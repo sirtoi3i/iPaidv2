@@ -1,5 +1,5 @@
 import { PouchServiceV2 } from '../services/pouch-service';
-import { LoginPage } from '../pages/login/login';
+//import { LoginPage } from '../pages/login/login';
 import { PurchaseCreationPage } from '../pages/purchase-creation/purchase-creation';
 import { ListProvider } from '../providers/list-provider';
 import { NgModule, ErrorHandler } from '@angular/core';
@@ -10,6 +10,7 @@ import {ListsPage} from '../pages/lists/lists';
 import {ListDetailsPage} from '../pages/list-details/list-details';
 import {ListCreationPage} from '../pages/list-creation/list-creation';
 import {PouchService} from "../services/pouch.service";
+import {ListService} from "../services/list-service";
 
 
 @NgModule({
@@ -19,8 +20,9 @@ import {PouchService} from "../services/pouch.service";
     ListsPage,
     ListDetailsPage,
     ListCreationPage,
-    PurchaseCreationPage,
-    LoginPage
+    PurchaseCreationPage
+    //,
+    //LoginPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -32,9 +34,10 @@ import {PouchService} from "../services/pouch.service";
     ListsPage,
     ListDetailsPage,
     ListCreationPage,
-    PurchaseCreationPage,
-    LoginPage
+    PurchaseCreationPage
+    //,
+    //LoginPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, ListProvider,PouchService, PouchServiceV2]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, ListProvider,PouchService, PouchServiceV2, ListService]
 })
 export class AppModule {}
