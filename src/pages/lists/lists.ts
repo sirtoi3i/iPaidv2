@@ -7,6 +7,7 @@ import {PurchaseList} from '../../objects/list';
 import {Purchase} from '../../objects/purchase';
 import {Component} from '@angular/core';
 import {NavController, NavParams} from 'ionic-angular';
+import {PouchServiceV2} from "../../services/pouch-service";
 
 
 /*
@@ -23,11 +24,12 @@ export class ListsPage {
 
     lists: PurchaseList[] = new Array<PurchaseList>();
 
-    constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController, public listProvider: ListProvider) {
+    constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController, public listProvider: ListProvider, public pouchService: PouchServiceV2) {
     }
 
     ionViewDidLoad() {
         this.listProvider.getAllLists();
+        this.pouchService.initNoti();
     }
 
     listSelected(list: PurchaseList) {

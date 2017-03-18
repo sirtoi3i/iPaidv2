@@ -17,7 +17,7 @@ export class ListService {
         //CREATE Local DB
         new PouchDB(listName);
         //CREATE Remote DB
-        this.pouchService.createDB(listName);
+        this.pouchService.createDBwithAdmin(listName);
 
 
         //Save DB in Private DB

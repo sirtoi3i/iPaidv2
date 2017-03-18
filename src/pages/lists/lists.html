@@ -18,7 +18,8 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
+  <button ion-button full color="secondary" (click)="pouchService.notify()">Notify</button>
 <ion-list>
   <button ion-item *ngFor="let list of listProvider.lists" (click)="listSelected(list)">
     {{ list.title }}  

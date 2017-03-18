@@ -9,6 +9,7 @@ export class PouchServiceV2 {
 
     readonly HOST: string = "http://localhost:5984/";
     readonly USERDB: string = "_users";
+    readonly NOTIFICATIONDB: string = "notification";
 
     readonly USERIDPrefix: string = 'org.couchdb.user:';
     readonly SECURITY: string = "/_security";
@@ -17,6 +18,7 @@ export class PouchServiceV2 {
     private identiy: string;
     private usersDB;
     private userId;
+    private notiDB;
 
 
     public privDBinstance;
@@ -71,6 +73,35 @@ export class PouchServiceV2 {
 
     }
 
+    public initNoti() {
+        this.notiDB = new PouchDB(this.NOTIFICATIONDB);
+        let remoteNotiDB = new PouchDB(this.HOST + this.NOTIFICATIONDB);
+        this.syncToDBwithUser(this.NOTIFICATIONDB);
+        remoteNotiDB.changes({
+            since: 'now',
+            live: true,
+            include_docs: true
+        }).on('change', change => {
+
+
+            if (change.doc.toUser == this.identiy) {
+                alert("Interessiert mich brennend!!!");
+                this.privDBinstance.post({listName: change.doc.listName});
+
+            } else {
+                alert("Interessiert mich n Scheiß");
+            }
+
+        }).on('complete', function (info) {
+            // changes() was canceled
+        }).on('error', function (err) {
+            console.log(err);
+        });
+    }
+
+    public notify() {
+        this.notiDB.post({fromUser: "tobi", toUser: "michel", listName: "zelten"})
+    }
 
     private initUser() {
 
@@ -79,7 +110,7 @@ export class PouchServiceV2 {
             succ => {
                 console.log(succ);
                 console.log("User already Existent - All good");
-                this.createPrivateDB();
+                this.createDBwithAdmin(this.identiy);
             },
             err => {
                 console.log(err);
@@ -109,12 +140,12 @@ export class PouchServiceV2 {
     }
 
 
-    private createPrivateDB() {
+    public createDBwithAdmin(dbname: string) {
 
         console.log("createPrivateDB");
 
 
-        let sync = PouchDB.replicate(this.identiy, this.HOST + this.identiy, this.adminOptions)
+        let sync = PouchDB.replicate(dbname, this.HOST + dbname, this.adminOptions)
             .on('change', function (info) {
                 // handle change
                 console.info("change" + info)
@@ -130,8 +161,8 @@ export class PouchServiceV2 {
             }).on('complete', i => {
                 // handle complete
                 console.info("complete" + i);
-                this.securePrivateDB();
-                this.syncToPrivateDB();
+                this.secureDBwithAdmin(dbname);
+                this.syncToDBwithUser(dbname);
             }).on('error', function (err) {
                 console.error("error" + err)
             });
@@ -140,9 +171,9 @@ export class PouchServiceV2 {
     }
 
 
-    private syncToPrivateDB() {
+    private syncToDBwithUser(dbname: string) {
         console.log("syncToPrivateDB");
-        let sync = PouchDB.sync(this.identiy, this.HOST + this.identiy, this.options)
+        let sync = PouchDB.sync(dbname, this.HOST + dbname, this.options)
             .on('change', function (info) {
                 // handle change
                 console.info("change" + info)
@@ -163,7 +194,7 @@ export class PouchServiceV2 {
             });
     }
 
-    private securePrivateDB() {
+    private secureDBwithAdmin(dbname: string) {
 
         let sec = {
             _id: "_security",
@@ -184,7 +215,7 @@ export class PouchServiceV2 {
         let headers = new Headers();
         headers.append("Authorization", "Basic " + btoa(this.ADMIN + ":" + this.ADMIN));
         headers.append('Content-Type', 'application/json');
-        let url = this.HOST + this.identiy + this.SECURITY;
+        let url = this.HOST + dbname + this.SECURITY;
 
 
         this.http.put(url, sec, {headers: headers}).map(res => res.json()).subscribe(
@@ -199,58 +230,5 @@ export class PouchServiceV2 {
         ;
 
 
-    }
-
-    public createDB(name: string) {
-
-        console.log("createPrivateDB");
-
-
-        let sync = PouchDB.replicate(name, this.HOST + name, this.adminOptions)
-            .on('change', function (info) {
-                // handle change
-                console.info("change" + info)
-            }).on('paused', function (err) {
-                // replication paused (e.g. replication up to date, user went offline)
-                console.error("paused", err)
-            }).on('active', function () {
-                // replicate resumed (e.g. new changes replicating, user went back online)
-                console.error("active")
-            }).on('denied', function (err) {
-                // a document failed to replicate (e.g. due to permissions)
-                console.error("denied" + err)
-            }).on('complete', i => {
-                // handle complete
-                console.info("complete" + i);
-                //this.syncremote(name);
-            }).on('error', function (err) {
-                console.error("error" + err)
-            });
-
-
-    }
-
-    private syncremote(listName: string) {
-
-        console.log("syncRemoteList");
-        let sync = PouchDB.sync(listName, this.HOST + listName, this.options)
-            .on('change', function (info) {
-                // handle change
-                console.info("change" + info)
-            }).on('paused', function (err) {
-                // replication paused (e.g. replication up to date, user went offline)
-                console.error("paused", err)
-            }).on('active', function () {
-                // replicate resumed (e.g. new changes replicating, user went back online)
-                console.error("active")
-            }).on('denied', function (err) {
-                // a document failed to replicate (e.g. due to permissions)
-                console.error("complete" + err)
-            }).on('complete', function (info) {
-                // handle complete
-                console.info("complete" + info)
-            }).on('error', function (err) {
-                console.error("error" + err)
-            });
     }
 }
