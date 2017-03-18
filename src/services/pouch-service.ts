@@ -13,8 +13,8 @@ export class PouchServiceV2 {
 
     registerUser(){
 
-        this.connectToUserDB();
-        this.connectToUserDB();
+       //  this.connectToUserDB();
+        // this.connectToUserDB();
 
 
     }

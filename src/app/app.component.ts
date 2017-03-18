@@ -12,7 +12,7 @@ import {ListCreationPage} from '../pages/list-creation/list-creation';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage = LoginPage;
+  rootPage = ListsPage;
 
   constructor(platform: Platform) {
     platform.ready().then(() => {

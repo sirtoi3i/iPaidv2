@@ -1,3 +1,4 @@
+import { ListService } from '../../services/list-service';
 
 import { ListProvider } from '../../providers/list-provider';
 import { User } from '../../objects/user';
@@ -20,7 +21,7 @@ export class ListCreationPage {
 
   list:PurchaseList = {name:'',purchases: new Array<Purchase>(),users: new Array<User>()};
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public listProvider: ListProvider, private viewCtrl: ViewController) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, public listProvider: ListProvider, private viewCtrl: ViewController, private listService : ListService) {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ListCreationPage');
@@ -28,6 +29,7 @@ export class ListCreationPage {
 
   save() {
      this.listProvider.addList(this.list);
+    // this.listService.createList(this.list.name);
      this.viewCtrl.dismiss();
   }
 
