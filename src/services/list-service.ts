@@ -1,3 +1,4 @@
+import { PurchaseList } from '../objects/list';
 import {Injectable, ApplicationRef} from '@angular/core';
 import * as PouchDB from 'pouchdb';
 import {Http} from "@angular/http";
@@ -12,16 +13,23 @@ export class ListService {
 
     }
 
-    createList(listName: string) {
+    createList(list: PurchaseList) {
+
+        let listName = list.name;
 
         //CREATE Local DB
         new PouchDB(listName);
         //CREATE Remote DB
         this.pouchService.createDB(listName);
 
-
         //Save DB in Private DB
         this.pouchService.privDBinstance.post({listName: listName});
+
+        console.log(list);
+        // add notification
+        for(let user of list.users) {
+            console.log(user);
+        }
     }
 
     getUserDB() {

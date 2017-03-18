@@ -60,8 +60,7 @@ export class ListProvider {
     }
 
     addList(list: PurchaseList) {
-        this.listService.createList(list.name);
-
+        this.listService.createList(list);
     }
 
     addPurchase(list: PurchaseList, purchase: Purchase) {
